@@ -1,0 +1,23 @@
+
+
+
+<select class="form-control" name="start" id="start">
+		<% for(i = time_start[0]; i < time_end[0]; i++){ %>
+				<% for(l = 0; l < time_split_count; l++){ %>
+						<option <% if(i*60+l*time_split == event.date_start.getHours()*60+event.date_start.getMinutes()) {%> 
+								<%= selected='selected' %><% } %> > 
+								<%= i + ":" + ("0" + l*time_split).slice(-2) %> </option>
+				<% }; %>
+		<% }; %>
+</select>
+
+
+<select class="form-control" name="end" id="end">
+		<% for(i = time_start[0]; i < time_end[0]; i++){ %>
+				<% for(l = 0; l < time_split_count; l++){ %>
+						<option <% if(i*60+l*time_split == event.date_end.getHours()*60+event.date_end.getMinutes()) {%> 
+								<%= selected='selected' %><% } %> >
+								<%= i + ":" + ("0" + l*time_split).slice(-2) %> </option>
+				<% }; %>
+		<% }; %>
+</select>

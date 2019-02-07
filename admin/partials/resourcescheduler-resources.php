@@ -20,14 +20,14 @@
 
 
   global $wpdb;
-  $table_name = $this->getTable('facilities');
+  $table_name = $this->getTable('resources');
   $facilties = $wpdb->get_results("SELECT * FROM $table_name ORDER BY name");
 
   ?>
 
 <div class="wrap">
-  <h1 class="wp-heading-inline"><?= __('Manage Facilities', 'resourcescheduler');?></h1>
-  <a class="page-title-action" href="<?= admin_url("admin.php?page=resourcescheduler-facility") ?>"><?= __('Create', 'resourcescheduler');?></a>
+  <h1 class="wp-heading-inline"><?= __('Manage Resources', 'resourcescheduler');?></h1>
+  <a class="page-title-action" href="<?= admin_url("admin.php?page=resourcescheduler-resource") ?>"><?= __('Create', 'resourcescheduler');?></a>
   <hr class="wp-header-end">
 
   <table class="wp-list-table widefat fixed striped posts">
@@ -50,8 +50,8 @@
           <td><?= $item->days ?></td>
           <td><?= $item->history ?></td>
           <td><?= $item->allowedtypes ?></td>
-          <td><code><?= "[resourcescheduler-facility id=$item->id]" ?></code></td>
-          <td><a class="page-action" href="<?= admin_url("admin.php?page=resourcescheduler-facility&courtID={$item->id}") ?>"><?= __('Edit', 'resourcescheduler');?></a>
+          <td><code><?= "[resourcescheduler-resource id=$item->id]" ?></code></td>
+          <td><a class="page-action" href="<?= admin_url("admin.php?page=resourcescheduler-resource&resourceID={$item->id}") ?>"><?= __('Edit', 'resourcescheduler');?></a>
         </tr>
       <?php } ?>
     </tbody>

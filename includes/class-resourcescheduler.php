@@ -67,8 +67,8 @@ class Resourcescheduler {
 	 * @since    1.0.0
 	 */
 	public function __construct() {
-		if ( defined( 'PLUGIN_NAME_VERSION' ) ) {
-			$this->version = PLUGIN_NAME_VERSION;
+		if ( defined( 'RESOURCESCHEDULER_NAME_VERSION' ) ) {
+			$this->version = RESOURCESCHEDULER_NAME_VERSION;
 		} else {
 			$this->version = '1.0.0';
 		}
@@ -156,10 +156,11 @@ class Resourcescheduler {
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
-		$this->loader->add_action( 'wp_ajax_get_events_schedule', $plugin_admin, 'get_events_schedule' );
+		$this->loader->add_action( 'wp_ajax_getEventsSchedule', $plugin_admin, 'getEventsSchedule' );
+		$this->loader->add_action( 'wp_ajax_no_priv_getEventsSchedule', $plugin_admin, 'getEventsSchedule' );
 
 		// Add the add reservation post back
-		$this->loader->add_action( 'admin_post_add_event', $plugin_admin, 'add_event' );
+		$this->loader->add_action( 'wp_ajax_addEvent', $plugin_admin, 'addEvent' );
 		
 		// Add menu item
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'add_resourcescheduler_admin_menu' );
@@ -179,10 +180,7 @@ class Resourcescheduler {
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
 
-		$this->loader->add_action( 'wp_ajax_get_events_schedule', $plugin_public, 'get_events_schedule' );
-		$this->loader->add_action( 'wp_ajax_no_priv_get_events_schedule', $plugin_public, 'get_events_schedule' );
-
-		$this->loader->add_shortcode('resourcescheduler-facility', $plugin_public, 'public_shortcode' );
+		$this->loader->add_shortcode('resourcescheduler-resource', $plugin_public, 'public_shortcode' );
 	}
 
 	/**

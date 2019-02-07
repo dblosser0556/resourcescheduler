@@ -41,30 +41,36 @@ class Resourcescheduler_Activator
 		}
 
 	// assets table
-		$table_facilities = $wpdb->prefix . 'resourcescheduler_facilities';
-		$sql = "CREATE TABLE $table_facilities (
+		$table_resources = $wpdb->prefix . 'resourcescheduler_resources';
+		$sql = "CREATE TABLE $table_resources (
 			id mediumint(9) NOT NULL AUTO_INCREMENT,
 			name varchar(255) NOT NULL,
-			open smallint(2) NOT NULL CHECK (open<=23),
-			close smallint(2) NOT NULL CHECK (close<=23),
+			open varchar(10) NOT NULL,
+			close varchar(10) NOT NULL,
+			time_split smallint(2) NOT NULL,
+			max_reservation_minutes smallint(2) NOT NULL,
 			days smallint(2) NOT NULL CHECK (days<365),
 			history smallint(2) NOT NULL CHECK (days<365),
-			allowedtypes varchar(512) NULL,
+			allowedtypes varchar(2048) NULL,
+			format12 tinyint(1) DEFAULT 0 NOT NULL ,
 			CHECK (open<close),
 			UNIQUE KEY id (id)
 		) $charset_collate;";
 		dbDelta($sql);
 
-// reservations table
+		// reservations table
 		$table_name = $wpdb->prefix . 'resourcescheduler_reservations';
 		$sql = "CREATE TABLE $table_name (
 			id mediumint(9) NOT NULL AUTO_INCREMENT,
-			facilityid mediumint(9) NOT NULL,
+			resourceid mediumint(9) NOT NULL,
+			title varchar(255) NOT NULL,
+			titleshort varchar(255) NULL,
 			type varchar(63) NOT NULL,
+			class varchar(255) NULL,
 			userid mediumint(9) NOT NULL,
 			start datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
 			end datetime  DEFAULT '0000-00-00 00:00:00' NOT NULL,
-			FOREIGN KEY (facilityid) REFERENCES {$table_facilities}(id) ON DELETE CASCADE,
+			FOREIGN KEY (resourceid) REFERENCES {$table_resources}(id) ON DELETE CASCADE,
 			UNIQUE KEY id (id)
 		) $charset_collate;";
 		dbDelta($sql);

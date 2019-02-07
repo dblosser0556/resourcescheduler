@@ -1,8 +1,9 @@
 <div class="cal-month-day <%= cls %>">
-	
-		<a id="add-event" class="float-left add-event" data-cal-date="<%= data_day %>">+</a>
-		<span style="display: inline-block; margin-top: 5px; line-height: 1em" class="float-right" data-cal-date="<%= data_day %>" data-cal-view="day" data-toggle="tooltip" title="<%= tooltip %>">
-			<%= day %></span>
+		<% if (options.canReserve && data_day <= options.maxReserveDate && data_day >= (new Date()).toISOString().split('T')[0]) 
+		{ %><a id="add-event" class="float-left add-event" data-cal-date="<%= data_day %>" data-event-id="0" title="Add Event" >+</a><% } %>
+		
+		<span style="display: inline-block; margin-top: 5px; line-height: 1em" class="float-right" data-cal-date="<%= data_day %>" data-cal-view="day" 
+			data-toggle="tooltip" title="<%= tooltip %>"><%= day %></span>
 	
 	<% if (events.length > 0) { %>
 	<div class="events-list" data-cal-start="<%= start %>" data-cal-end="<%= end %>">

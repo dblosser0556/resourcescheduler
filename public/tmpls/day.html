@@ -38,7 +38,12 @@
 				<div class="cal-day-hour">
 					<% for(l = 0; l < cal._hour_min(i); l++){ %>
 						<div class="row-fluid cal-day-hour-part">
-							<div class="span1 col-xs-1"><b><%= cal._hour(i, l) %></b></div>
+							<div class="span1 col-xs-1">
+									<% if (options.canReserve && start.toISOString().split('T')[0] <= options.maxReserveDate && start.toISOString().split('T')[0] >= (new Date()).toISOString().split('T')[0]) 
+									{ %><a id="add-event" data-cal-date="<%= start.getFullYear() %>-<%= start.getMonthFormatted() %>-<%= start.getDateFormatted() %>" data-event-id="0" title="Add Event" ><b><%= cal._hour(i, l) %></b></a><% } else { %>
+								<b><%= cal._hour(i, l) %></b><% } %>
+							</div> 
+								
 							<div class="span11 col-xs-11"></div>
 						</div>
 				<% }; %>

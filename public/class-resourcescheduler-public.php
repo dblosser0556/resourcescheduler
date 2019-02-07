@@ -75,7 +75,7 @@ class Resourcescheduler_Public {
 
 		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/resourcescheduler-public.css', array(), date("h:i:s"), 'all' );
 		wp_enqueue_style( $this->plugin_name . 'calendar', plugin_dir_url( __FILE__ ) . 'css/calendar.css', array(), $this->version, 'all' );
-		wp_enqueue_style( $this->plugin_name . '-load-bs', 'https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css' );
+		wp_enqueue_style( $this->plugin_name . '-load-bs',  plugin_dir_url( __FILE__ ) . 'css/bootstrap.min.css', array(), $this->version, 'all' );
 	}
 
 	/**
@@ -97,12 +97,106 @@ class Resourcescheduler_Public {
 		 * class.
 		 */
 	
-		//wp_enqueue_script( $this->plugin_name . "jquery", plugin_dir_url( __FILE__ ) . 'js/jquery-min.js', array( 'jquery' ), $this->version, false );
+		
 		wp_enqueue_script( $this->plugin_name . "underscore", plugin_dir_url( __FILE__ ) . 'js/underscore-min.js', array( 'jquery' ), $this->version, false );
+		wp_enqueue_script( $this->plugin_name . "jstz", plugin_dir_url( __FILE__ ) . 'js/jstz.min.js', array( 'jquery' ), $this->version, false );
+		wp_enqueue_script( $this->plugin_name . "bootstrap", plugin_dir_url( __FILE__ ) . 'js/bootstrap.bundle.min.js', array( 'jquery' ), $this->version, false );
 		wp_enqueue_script( $this->plugin_name . "calendar", plugin_dir_url( __FILE__ ) . 'js/calendar.js', array( 'jquery' ), date("h:i:s"), false );
-		//wp_enqueue_script( $this->plugin_name . "app", plugin_dir_url( __FILE__ ) . 'js/app.js', array( 'jquery' ), $this->version, false );
+		
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/resourcescheduler-public.js', array( 'jquery' ), date("h:i:s"), false );
 	}
+
+	private function getTable($table) {
+		global $wpdb;
+		return "{$wpdb->prefix}resourcescheduler_{$table}";
+	}
+
+	public function getResourceByID($resourceID) {
+		global $wpdb;
+		$table_resources = $this->getTable('resources');
+		return $wpdb->get_row("SELECT * FROM $table_resources WHERE id = $resourceID");
+	}
+
+	
+	public function getCurrentUser() {
+		$current_user = wp_get_current_user();
+		
+
+		// check to make sure it there is a logged in user.
+		// if not return a use with no capabilities
+		if ($current_user->ID == 0) {
+			$currentUser = new stdClass();
+			$currentUser->userid = 0;
+			$currentUser->username = "guest";
+			$currentUser->role = '';
+			$currentUser->maxDate = '1900-01-01';
+			$currentUser->canReserve = 0;
+			return $currentUser;
+		}
+
+		$roles = $current_user->roles;
+		
+		
+
+		if ($roles[0] === 'administrator') {
+			$maxDate = new DateTime('2200-01-01');
+			$currentUser = new stdClass();
+			$currentUser->userid = $current_user->ID;
+			$currentUser->username = $current_user->display_name;
+			$currentUser->role = 'administrator';
+			$currentUser->maxDate = $maxDate->format('Y-m-d');
+			$currentUser->canReserve = 1;
+			return $currentUser;
+		}
+		
+		// assumes only one role if multiple roles this is a breaking issue
+		global $wpdb;
+		$query = "SELECT * FROM {$this->getTable('roles')} WHERE slug = '$roles[0]'";
+		
+		
+
+		$role = $wpdb->get_results($query);
+		
+		// if this users role is not in the roles table then set the 
+		// user with no capabilities
+		if (!isset($role)) {
+			$currentUser = new stdClass();
+			$currentUser->userid = $current_user->ID;
+			$currentUser->role = '';
+			$currentUser->username = $current_user->display_name;
+			$currentUser->maxDate = '1900-01-01';
+			$currentUser->canReserve = 0;
+			return $currentUser;
+		}
+
+	
+		$startDate = new DateTimeImmutable();
+		$endDate = $startDate->add(new DateInterval('P'. $role[0]->maxdays . 'D'));
+		
+		$count = $this->getReservationCountForUser($current_user->ID, $startDate->format('Y-m-d'), $endDate->format('Y-m-d'));
+
+
+		$currentUser = new stdClass();
+		$currentUser->userid = $current_user->ID;
+		$currentUser->role = $role[0]->name;
+		$currentUser->username = $current_user->display_name;
+		$currentUser->maxDate = $endDate->format('Y-m-d');
+		$currentUser->canReserve = ($count < $role[0]->maxres) ? 1 : 0;
+		return $currentUser;
+
+	}
+
+	public function getReservationCountForUser($userId, $startDate, $endDate){
+
+		$query = "SELECT COUNT(*) FROM {$this->getTable('reservations')} WHERE 
+	    userid = '$userId' AND start >= '$startDate' AND end <= '$endDate'";
+
+		global $wpdb;
+		$count = $wpdb->get_var($query);
+
+		return $count;
+	}
+
 
 	public function public_shortcode( $atts, $content = null ) {
 		ob_start();

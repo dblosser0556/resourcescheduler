@@ -49,7 +49,7 @@ class Resourcescheduler_Deactivator {
 
 
 	// courts table
-	$table_name = $wpdb->prefix . 'resourcescheduler_facilities';
+	$table_name = $wpdb->prefix . 'resourcescheduler_resources';
 	$sql = "DROP TABLE IF EXISTS $table_name";
 	$wpdb->query($sql);
 

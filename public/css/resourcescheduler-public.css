@@ -3,20 +3,55 @@
  * included in this file.
  */
 
- .add-event {
-    display: inline-block;
-    background-color: #3684b8;
-    color: whitesmoke;
-    width: 18px;
-    height: 18px;
-    margin-top: 5px;
-    margin-left: 5px;
-    font-size: .9em;
-    text-align: center;
-    border-radius: 3px;
-    line-height: 18px;
+.add-event {
+   display: inline-block;
+   background-color: #3684b8;
+   color: whitesmoke !important;
+   width: 18px;
+   height: 18px;
+   margin-top: 5px;
+   margin-left: 5px;
+   font-size: .9em;
+   text-align: center;
+   border-radius: 3px;
+   line-height: 18px;
+   cursor: pointer;
 
 
-    -webkit-box-shadow: inset 0px 0px 5px 0px rgba(0, 0, 0, 0.4);
-    box-shadow: inset 0px 0px 5px 0px rgba(0, 0, 0, 0.4);
- }
+   -webkit-box-shadow: inset 0px 0px 5px 0px rgba(0, 0, 0, 0.4);
+   box-shadow: inset 0px 0px 5px 0px rgba(0, 0, 0, 0.4) !important;
+}
+
+.smt-spinner-circle {
+   width: 50px;
+   height: 50px;
+   margin: 20px;
+   border-radius: 50%;
+   position: absolute;
+   top: 50%;
+   left: 50%;
+   -moz-transform: translateX(-50%) translateY(-50%);
+   -webkit-transform: translateX(-50%) translateY(-50%);
+   transform: translateX(-50%) translateY(-50%);
+}
+
+.smt-spinner {
+   height: 100%;
+   width: 100%;
+   border-radius: 50%;
+   border-right: 2px solid rgba(255, 255, 255, 0.6);
+   border-top: 2px solid blue;
+   border-left: 2px solid blue;
+   border-bottom: 2px solid blue;
+   animation: rotate--spinner 1.6s infinite;
+}
+
+@keyframes rotate--spinner {
+   from {
+      transform: rotate(0);
+   }
+
+   to {
+      transform: rotate(360deg);
+   }
+}

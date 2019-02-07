@@ -1,10 +1,50 @@
 <% 	event.date_start = new Date(parseInt(event.start));
-	event.date_end = new Date(parseInt(event.end)); %>
-<div id = "event-meta" class  = "float-right">
-    <span>Starts on <%= event.date_start.getDate() %> <%= calendar.locale["m" + event.date_start.getMonth()] %> <%= event.date_start.getFullYear() %>, at <%= event.date_start.getHours() %>:<%= event.date_start.getMinutes() %> <i class = "icon-time"></i></span><br />
-    <span>Ends on <%= event.date_end.getDate() %> <%= calendar.locale["m" + event.date_end.getMonth()] %> <%= event.date_end.getFullYear() %> at <%= event.date_end.getHours() %>:<%= event.date_end.getMinutes() %> <i class = "icon-time"></i></span><br />
-</div>
+    event.date_end = new Date(parseInt(event.end)); 
+    event.time_start = event.date_start.getHours() + ':' + event.date_start.getMinutes();
+    event.time_end = event.date_end.getHours() + ':' + event.date_end.getMinutes();
+    event.time_start = calendar._format_hour(event.time_start);
+    event.time_end = calendar._format_hour(event.time_end);
+%>
 
-<div style = "margin: 10px 0">
-    <a href = "<%= event.url %>" class = "btn btn-primary"><i class = "icon-calendar"></i> More info</a>
-</div>
+
+<form id="resform">
+    <input type="hidden" name="action" value="addEvent">
+    <input type="hidden" name="id" value="<%= event.id %>">
+    <input type="hidden" name="resourceid" value="<%= calendar.options.resourceid %>" />
+      <div class="form-group">
+          <label for="date">Date</label>
+          <input type="text" name="date" class="form-control" id="date" readonly value='<%= event.date_start.toISOString().slice(0, 10)%>'>
+      </div>
+      <div class="form-group">
+          <label for="member">Player</label>
+          <input type="text" class="form-control" id="member" value="<%= calendar.options.username %> " readonly>
+      </div>
+      <div class="form-group">
+          <label for="type">Type</label>
+          <select class="form-control" name="type" id="type">
+                <% _.each(options.reservationTypes, function(type) { %>
+                    <option value="<%= type %>" > <%= type %> </option>
+                <% }) %>
+            </select>
+      </div>
+      <div class="row">
+          <div class="col">
+              <div class="form-group">
+                  <label for="start">Start</label>
+                  <input type="time" name="start" id="start" value="<%= event.time_start %>"
+                    max="<%= calendar.options.time_end %>" min="<%= calendar.options.time_start %>" 
+                    step="<%= calendar.options.time_split * 60 %>" required>
+                        
+              </div>
+          </div>
+          <div class="col">
+              <div class="form-group">
+                  <label for="end">End</label>
+                  <input type="time" name="end" id="end" value="<%= event.time_end %>"
+                  max="<%= calendar.options.time_end %>" min="<%= calendar.options.time_start %>"
+                  step="<%= calendar.options.time_split * 60 %>" required>
+                  
+              </div>
+          </div>
+      </div>
+  </form>
